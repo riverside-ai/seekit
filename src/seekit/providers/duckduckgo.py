@@ -1,0 +1,27 @@
+import json
+import re
+
+from ._base import BaseSERP, SerpItem, clean_text, strip_html
+
+
+class DuckDuckGoSerp(BaseSERP):
+    provider = "duckduckgo"
+
+    def parse_response(self, body: str) -> list[SerpItem]:
+        match = re.search(r"DDG\.duckbar\.add\((\{.*?\}),null,\"index\"\)", body)
+        if not match:
+            return []
+        payload = json.loads(match.group(1))
+        abstract = clean_text(payload["data"].get("AbstractText"))
+        items: list[SerpItem] = []
+        for result in payload["data"].get("Results", []):
+            item = self.make_item(
+                title=strip_html(result.get("Text")),
+                excerpt=abstract,
+                url=result.get("FirstURL"),
+                author=payload["data"].get("AbstractSource"),
+                cover_url=result.get("Icon", {}).get("URL"),
+            )
+            if item is not None:
+                items.append(item)
+        return items

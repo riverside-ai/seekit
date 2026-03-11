@@ -1,29 +1,32 @@
 [project]
-name = "pyserp"
+name = "seekit"
 version = "0.0.1"
 authors = [{ name = "lexiforest", email = "infinitesheldon@gmail.com" }]
-description = "Python API for various search engine response pages(SERP)"
-license = { text = "MIT License" }
+description = "Python API for various search engines"
+license = "MIT"
 dependencies = [
     "curl-cffi>=0.14.0",
     "lxml_html_clean>=0.4.2",
     "lxml>=5.3.2",
     "pydantic>=2.0.0",
+    "PyYAML>=6.0",
 ]
 readme = "README.md"
 requires-python = ">=3.10"
-urls = { "repository" = "https://github.com/lexiforest/pyserp" }
+urls = { "repository" = "https://github.com/riverside-ai/seekit" }
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
+
+[project.scripts]
+seekit = "seekit.cli:main"
 
 
 [project.optional-dependencies]
