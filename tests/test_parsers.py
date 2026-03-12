@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from seekit import PROVIDERS, parse_har
-from seekit.providers._base import EngineConfig, load_engine_configs
+from har import EngineConfig, load_engine_configs, parse_har
+from seekit import PROVIDERS
 
 
 ROOT = Path(__file__).resolve().parents[1]

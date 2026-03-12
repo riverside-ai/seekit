@@ -1,42 +1,25 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-import base64
-from collections import OrderedDict
 from dataclasses import dataclass
 from functools import cache
 import json
 from json import JSONDecoder
-from pathlib import Path
 import re
 from typing import Any
-from urllib.parse import quote, quote_plus, urljoin
+from urllib.parse import quote, quote_plus, urljoin, urlsplit, urlunsplit
 
 import curl_cffi
 import lxml.html
 from pydantic import BaseModel
-import yaml
 
 
 @dataclass(frozen=True)
-class EngineExample:
-    keyword: str
-    page: str
-
-
-@dataclass(frozen=True)
-class EngineConfig:
-    name: str
-    example: EngineExample
-    type: str | None = None
-
-
-@dataclass(frozen=True)
-class HarRequestTemplate:
+class RequestTemplate:
     method: str
     url: str
-    headers: tuple[tuple[str, str], ...]
-    cookies: tuple[tuple[str, str], ...]
+    headers: dict[str, str]
+    cookies: dict[str, str]
     body: str | None = None
 
 
@@ -47,6 +30,10 @@ class SerpItem(BaseModel):
     url: str | None = None
     author: str | None = None
     cover_url: str | None = None
+    time: str | None = None
+
+
+KEYWORD_PLACEHOLDER = "OpenClaw"
 
 
 def clean_text(value: str | None) -> str | None:
@@ -96,38 +83,6 @@ def absolutize_url(value: str | None, base_url: str | None = None) -> str | None
 
 
 @cache
-def load_engine_configs(path: str | Path = "data/info.yaml") -> tuple[EngineConfig, ...]:
-    with Path(path).open() as handle:
-        payload = yaml.safe_load(handle)
-    configs = []
-    for entry in payload["engines"]:
-        example = EngineExample(**entry["example"])
-        configs.append(EngineConfig(name=entry["name"], example=example, type=entry.get("type")))
-    return tuple(configs)
-
-
-@cache
-def load_engine_config_map(path: str | Path = "data/info.yaml") -> dict[str, EngineConfig]:
-    return {config.name: config for config in load_engine_configs(path)}
-
-
-def get_engine_config(name: str, path: str | Path = "data/info.yaml") -> EngineConfig:
-    return load_engine_config_map(path)[name]
-
-
-def load_har_entries(path: str | Path) -> list[dict[str, Any]]:
-    with Path(path).open() as handle:
-        payload = json.load(handle)
-    return payload["log"]["entries"]
-
-
-def decode_har_content(content: dict[str, Any]) -> str:
-    text = content.get("text", "")
-    if content.get("encoding") == "base64":
-        text = base64.b64decode(text).decode("utf-8", errors="ignore")
-    return text
-
-
 def extract_json_from_text(text: str) -> Any:
     candidates = [index for index in (text.find("{"), text.find("[")) if index != -1]
     if not candidates:
@@ -137,96 +92,95 @@ def extract_json_from_text(text: str) -> Any:
     return payload
 
 
-def build_har_request_template(entry: dict[str, Any]) -> HarRequestTemplate:
-    request = entry["request"]
-    headers: list[tuple[str, str]] = []
-    for header in request.get("headers", []):
-        name = header["name"]
-        if name.startswith(":"):
-            continue
-        headers.append((name, header["value"]))
-    cookies = tuple((cookie["name"], cookie["value"]) for cookie in request.get("cookies", []))
-    post_data = request.get("postData")
-    body = post_data.get("text") if post_data else None
-    return HarRequestTemplate(
-        method=request["method"],
-        url=request["url"],
-        headers=tuple(headers),
-        cookies=cookies,
-        body=body,
-    )
-
-
-def replace_keyword(value: str, source_keyword: str, target_keyword: str) -> str:
+def replace_placeholder(value: str, placeholder: str = KEYWORD_PLACEHOLDER) -> str:
     replacements = (
-        (source_keyword, target_keyword),
-        (quote(source_keyword), quote(target_keyword)),
-        (quote(source_keyword, safe=""), quote(target_keyword, safe="")),
-        (quote_plus(source_keyword), quote_plus(target_keyword)),
+        (quote_plus(placeholder), "{keyword_plus}"),
+        (quote(placeholder, safe=""), "{keyword_quoted_strict}"),
+        (quote(placeholder), "{keyword_quoted}"),
+        (placeholder, "{keyword}"),
     )
     result = value
-    for source, target in replacements:
-        result = result.replace(source, target)
+    for source, template in replacements:
+        result = result.replace(source, template)
     return result
+
+
+def url_to_template(url: str) -> str:
+    parts = urlsplit(url)
+    path = replace_placeholder(parts.path)
+    query_parts: list[str] = []
+    if parts.query:
+        for chunk in parts.query.split("&"):
+            if "=" in chunk:
+                key, value = chunk.split("=", 1)
+                query_parts.append(f"{replace_placeholder(key)}={replace_placeholder(value)}")
+            else:
+                query_parts.append(replace_placeholder(chunk))
+    query = "&".join(query_parts)
+    fragment = replace_placeholder(parts.fragment)
+    return urlunsplit((parts.scheme, parts.netloc, path, query, fragment))
+
+
+def render_template(value: str, keyword: str) -> str:
+    return value.format(
+        keyword=keyword,
+        keyword_plus=quote_plus(keyword),
+        keyword_quoted=quote(keyword),
+        keyword_quoted_strict=quote(keyword, safe=""),
+    )
+
+
+def build_request_template(
+    *,
+    method: str,
+    url: str,
+    headers: dict[str, str],
+    cookies: dict[str, str],
+    body: str | None = None,
+) -> RequestTemplate:
+    return RequestTemplate(
+        method=method,
+        url=url_to_template(url),
+        headers={name: replace_placeholder(value) for name, value in headers.items()},
+        cookies={name: replace_placeholder(value) for name, value in cookies.items()},
+        body=replace_placeholder(body) if body is not None else None,
+    )
 
 
 class BaseSERP(ABC):
     provider: str = ""
     base_url: str | None = None
-
-    def get_engine_config(self) -> EngineConfig:
-        return get_engine_config(self.provider)
-
-    def get_har_path(self) -> Path:
-        config = self.get_engine_config()
-        return Path("data/pages") / config.example.page
+    request_template: RequestTemplate | None = None
 
     def pick_entry(self, entries: list[dict[str, Any]]) -> dict[str, Any]:
         return entries[0]
 
-    def parse_har_file(self, path: str | Path) -> list[SerpItem]:
-        entry = self.pick_entry(load_har_entries(path))
-        body = decode_har_content(entry["response"]["content"])
-        return self.parse_response(body)
-
-    def get_request_template(self, keyword: str) -> HarRequestTemplate:
-        config = self.get_engine_config()
-        entry = self.pick_entry(load_har_entries(self.get_har_path()))
-        template = build_har_request_template(entry)
-        return self.apply_keyword_to_template(
-            template,
-            source_keyword=config.example.keyword,
-            target_keyword=keyword,
-        )
-
-    def apply_keyword_to_template(
-        self,
-        template: HarRequestTemplate,
-        *,
-        source_keyword: str,
-        target_keyword: str,
-    ) -> HarRequestTemplate:
-        return HarRequestTemplate(
+    def get_request_template(self, keyword: str) -> RequestTemplate:
+        if self.request_template is None:
+            raise ValueError(f"{self.provider} does not define a request template.")
+        template = self.request_template
+        return RequestTemplate(
             method=template.method,
-            url=replace_keyword(template.url, source_keyword, target_keyword),
-            headers=template.headers,
-            cookies=template.cookies,
-            body=(
-                replace_keyword(template.body, source_keyword, target_keyword)
-                if template.body is not None
-                else None
-            ),
+            url=render_template(template.url, keyword),
+            headers={name: render_template(value, keyword) for name, value in template.headers.items()},
+            cookies={name: render_template(value, keyword) for name, value in template.cookies.items()},
+            body=render_template(template.body, keyword) if template.body is not None else None,
         )
 
     def request(self, keyword: str) -> str:
         template = self.get_request_template(keyword)
-        response = curl_cffi.requests.request(
+        headers = {
+            name: value
+            for name, value in template.headers.items()
+            if name.lower() != "content-length"
+        }
+        response = curl_cffi.request(
             method=template.method,
             url=template.url,
-            headers=OrderedDict(template.headers),
-            cookies=OrderedDict(template.cookies),
+            headers=headers,
+            cookies=template.cookies,
             data=template.body,
-            impersonate="chrome120",
+            impersonate="chrome",
         )
         return response.text
 
@@ -245,11 +199,13 @@ class BaseSERP(ABC):
         url: str | None,
         author: str | None = None,
         cover_url: str | None = None,
+        time: str | None = None,
         base_url: str | None = None,
     ) -> SerpItem | None:
         title = clean_text(title)
         excerpt = clean_text(excerpt)
         author = clean_text(author)
+        time = clean_text(time)
         url = absolutize_url(url, base_url or self.base_url)
         cover_url = absolutize_url(cover_url, base_url or self.base_url)
         if not any([title, excerpt, url]):
@@ -261,6 +217,7 @@ class BaseSERP(ABC):
             url=url,
             author=author,
             cover_url=cover_url,
+            time=time,
         )
 
 

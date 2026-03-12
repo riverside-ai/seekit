@@ -1,4 +1,4 @@
-from ._base import BaseSERP, EngineConfig, HarRequestTemplate, HtmlSERP, SerpItem
+from ._base import BaseSERP, HtmlSERP, RequestTemplate, SerpItem
 from .baidu import BaiduSerp
 from .bilibili import BilibiliSerp
 from .bing import BingSerp
@@ -19,9 +19,8 @@ from .zhihu import ZhihuSerp
 
 __all__ = [
     "BaseSERP",
-    "EngineConfig",
-    "HarRequestTemplate",
     "HtmlSERP",
+    "RequestTemplate",
     "SerpItem",
     "BaiduSerp",
     "BilibiliSerp",

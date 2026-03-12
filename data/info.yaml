@@ -1,0 +1,85 @@
+engines:
+  - name: baidu
+    example:
+      keyword: OpenClaw
+      page: baidu.har
+    type: web
+  - name: bilibili
+    example:
+      keyword: OpenClaw
+      page: bilibili.har
+    type: video
+  - name: bing
+    example:
+      keyword: OpenClaw
+      page: bing.har
+  - name: brave
+    example:
+      keyword: OpenClaw
+      page: brave.har
+    type: web
+  - name: douyin
+    example:
+      keyword: OpenClaw
+      page: douyin.har
+    type: video
+  - name: duckduckgo
+    example:
+      keyword: OpenClaw
+      page: duckduckgo.har
+    type: web
+  - name: google
+    example:
+      keyword: OpenClaw
+      page: google.har
+    type: web
+  - name: reddit
+    example:
+      keyword: OpenClaw
+      page: reddit.har
+    type: social
+  - name: so
+    example:
+      keyword: OpenClaw
+      page: so.har
+    type: web
+  - name: sogou
+    example:
+      keyword: OpenClaw
+      page: sogou.har
+    type: web
+  - name: threads
+    example:
+      keyword: OpenClaw
+      page: threads.har
+    type: social
+  - name: tiktok
+    example:
+      keyword: OpenClaw
+      page: tiktok.har
+    type: video
+  - name: toutiao
+    example:
+      keyword: OpenClaw
+      page: toutiao.har
+    type: web
+  - name: weibo
+    example:
+      keyword: OpenClaw
+      page: weibo.har
+    type: social
+  - name: youtube
+    example:
+      keyword: OpenClaw
+      page: youtube.har
+    type: video
+  - name: yandex
+    example:
+      keyword: OpenClaw
+      page: yandex.har
+    type: web
+  - name: zhihu
+    example:
+      keyword: OpenClaw
+      page: zhihu.har
+    type: social

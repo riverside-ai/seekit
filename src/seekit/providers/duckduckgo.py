@@ -1,11 +1,19 @@
 import json
 import re
 
-from ._base import BaseSERP, SerpItem, clean_text, strip_html
+from ._base import BaseSERP, SerpItem, build_request_template, clean_text, strip_html
 
 
 class DuckDuckGoSerp(BaseSERP):
     provider = "duckduckgo"
+    request_template = build_request_template(
+        method="GET",
+        url="https://duckduckgo.com/?ia=web&origin=funnel_home_website&t=h_&q=OpenClaw&chip-select=search",
+        headers={
+            "referer": "https://duckduckgo.com/",
+        },
+        cookies={},
+    )
 
     def parse_response(self, body: str) -> list[SerpItem]:
         match = re.search(r"DDG\.duckbar\.add\((\{.*?\}),null,\"index\"\)", body)

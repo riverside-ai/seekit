@@ -1,10 +1,18 @@
 import re
 
-from ._base import BaseSERP, SerpItem
+from ._base import BaseSERP, SerpItem, build_request_template
 
 
 class ToutiaoSerp(BaseSERP):
     provider = "toutiao"
+    request_template = build_request_template(
+        method="GET",
+        url="https://so.toutiao.com/search?dvpf=pc&source=input&keyword=OpenClaw&enable_druid_v2=1",
+        headers={
+            "referer": "https://www.toutiao.com/",
+        },
+        cookies={},
+    )
 
     def parse_response(self, body: str) -> list[SerpItem]:
         pattern = re.compile(
