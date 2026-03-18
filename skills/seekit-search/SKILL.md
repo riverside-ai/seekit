@@ -1,6 +1,6 @@
 ---
 name: seekit-search
-description: Use this skill when an agent needs fresh web results through search engines. It explains how to choose a provider, call `seekit` for live network fetches, and consume the json data from search engines.
+description: Use this skill when an agent needs fresh web results. No API key required. Supports multiple platforms (web, video, social). It explains how to choose a provider, call `seekit` for live network fetches, and consume the json data from search engines.
 ---
 
 # Seekit Live Search
