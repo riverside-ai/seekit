@@ -1,6 +1,6 @@
 [project]
 name = "seekit"
-version = "0.0.2"
+version = "0.1.0"
 authors = [{ name = "lexiforest", email = "infinitesheldon@gmail.com" }]
 description = "Python API for various search engines"
 license = "MIT"
