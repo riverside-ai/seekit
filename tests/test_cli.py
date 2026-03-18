@@ -22,14 +22,14 @@ def test_cli_defaults_to_bing_table_output() -> None:
     args = build_parser().parse_args(["OpenAI"])
 
     assert args.engine == "bing"
-    assert args.format == "table"
+    assert args.format == "markdown"
     assert args.keyword == ["OpenAI"]
 
 
 def test_cli_supports_engine_and_format_options() -> None:
-    args = build_parser().parse_args(["latest", "OpenAI", "--engine", "baidu", "--format", "json"])
+    args = build_parser().parse_args(["latest", "OpenAI", "--engine", "brave", "--format", "json"])
 
-    assert args.engine == "baidu"
+    assert args.engine == "brave"
     assert args.format == "json"
     assert args.keyword == ["latest", "OpenAI"]
 

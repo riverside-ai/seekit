@@ -4,6 +4,7 @@ engines:
       keyword: OpenClaw
       page: baidu.har
     type: web
+    disabled: true
   - name: bilibili
     example:
       keyword: OpenClaw
@@ -23,16 +24,19 @@ engines:
       keyword: OpenClaw
       page: douyin.har
     type: video
+    disabled: true
   - name: duckduckgo
     example:
       keyword: OpenClaw
       page: duckduckgo.har
     type: web
+    disabled: true  # uses html.duckduckgo.com now, HAR is from JS endpoint
   - name: google
     example:
       keyword: OpenClaw
       page: google.har
     type: web
+    disabled: true
   - name: reddit
     example:
       keyword: OpenClaw
@@ -52,12 +56,14 @@ engines:
     example:
       keyword: OpenClaw
       page: threads.har
+    entry_index: -1
     type: social
   - name: tiktok
     example:
       keyword: OpenClaw
       page: tiktok.har
     type: video
+    disabled: true
   - name: toutiao
     example:
       keyword: OpenClaw
@@ -78,6 +84,7 @@ engines:
       keyword: OpenClaw
       page: yandex.har
     type: web
+    disabled: true
   - name: zhihu
     example:
       keyword: OpenClaw

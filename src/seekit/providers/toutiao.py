@@ -1,31 +1,36 @@
+import json
 import re
 
-from ._base import BaseSERP, SerpItem, build_request_template
+import lxml.html
+
+from ._base import BaseSERP, SerpItem, load_request_template, strip_html
 
 
 class ToutiaoSerp(BaseSERP):
     provider = "toutiao"
-    request_template = build_request_template(
-        method="GET",
-        url="https://so.toutiao.com/search?dvpf=pc&source=input&keyword=OpenClaw&enable_druid_v2=1",
-        headers={
-            "referer": "https://www.toutiao.com/",
-        },
-        cookies={},
-    )
+    request_template = load_request_template("toutiao")
 
     def parse_response(self, body: str) -> list[SerpItem]:
-        pattern = re.compile(
-            r'"title":"(?P<title>[^"]+?)".{0,1200}?"abstract":"(?P<excerpt>[^"]+?)".{0,1200}?"open_url":"(?P<url>http[^"]+)".{0,1200}?"media_name":"(?P<author>[^"]*?)"',
-            re.S,
-        )
+        tree = lxml.html.fromstring(body)
         items: list[SerpItem] = []
-        for match in pattern.finditer(body):
+        for script in tree.xpath("//script"):
+            text = (script.text or "").strip()
+            if not text.startswith("{") or '"open_url"' not in text:
+                continue
+            try:
+                payload = json.loads(text)
+            except (json.JSONDecodeError, ValueError):
+                continue
+            data = payload.get("data", payload)
+            title = strip_html(data.get("title"))
+            url = data.get("open_url")
+            if not title or not url:
+                continue
             built = self.make_item(
-                title=match.group("title"),
-                excerpt=match.group("excerpt"),
-                url=match.group("url"),
-                author=match.group("author") or None,
+                title=title,
+                excerpt=strip_html(data.get("abstract")),
+                url=url,
+                author=data.get("source") or data.get("media_name"),
             )
             if built is not None:
                 items.append(built)

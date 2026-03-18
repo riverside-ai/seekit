@@ -1,5 +1,6 @@
 # Repo Guide
 
+
 ## Overview
 
 - `seekit/providers/_base.py` contains the shared `SerpItem` model, HAR request-template helpers, and parser base classes.
@@ -19,3 +20,14 @@
 
 - Run `pytest` when dependencies are available.
 - If the local environment is missing parser dependencies, note that explicitly in your handoff.
+
+## Development
+
+- Use `uv` for managing venv and dependencies
+
+### How to add a new engine
+
+- In the browser, save the page to second response page, which contains the pagination parameters.
+- Run `uv run python data/har.py` to parse the request and response.
+- Ask Codex to annotate the pagination parameters.
+- Remove unnecessary headers.

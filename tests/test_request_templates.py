@@ -3,8 +3,8 @@ from har import load_engine_configs
 from seekit.providers._base import RequestTemplate
 
 
-def test_google_request_template_replaces_keyword() -> None:
-    template = get_provider("google").get_request_template("Latest OpenAI")
+def test_bing_request_template_replaces_keyword() -> None:
+    template = get_provider("bing").get_request_template("Latest OpenAI")
 
     assert isinstance(template, RequestTemplate)
     assert template.method == "GET"
@@ -21,7 +21,7 @@ def test_threads_request_template_replaces_keyword_in_body() -> None:
 
 
 def test_keyword_replacement_updates_header_values() -> None:
-    template = get_provider("tiktok").get_request_template("fresh keyword")
+    template = get_provider("zhihu").get_request_template("fresh keyword")
 
     assert "OpenClaw" not in template.headers["referer"]
     assert "fresh keyword" in template.headers["referer"] or "fresh+keyword" in template.headers["referer"]
@@ -31,4 +31,4 @@ def test_dev_engine_config_loads_from_repo_data() -> None:
     configs = load_engine_configs()
 
     assert configs
-    assert any(config.name == "google" for config in configs)
+    assert any(config.name == "bing" for config in configs)

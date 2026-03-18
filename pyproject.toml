@@ -90,9 +90,12 @@ include-package-data = true
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+seekit = ["params.yaml", "serp.md.template", "zhihu_encrypt.js"]
+
 
 [tool.pytest.ini_options]
-# pythonpath = [ "." ]
+pythonpath = ["src", "data"]
 asyncio_mode = "auto"
 
 

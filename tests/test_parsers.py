@@ -15,7 +15,7 @@ def test_engine_fixture_parses(engine: EngineConfig) -> None:
     assert provider in PROVIDERS
 
     fixture = ROOT / "data" / "pages" / engine.example.page
-    items = parse_har(provider, fixture)
+    items = parse_har(provider, fixture, entry_index=engine.entry_index)
 
     assert items, provider
     assert any(item.title for item in items), provider

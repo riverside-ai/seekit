@@ -40,6 +40,7 @@ Once you finished one task, check the box. Work on the task ONE BY ONE.
 - [x] Remove referencing local files, the package is not working on other machines
 - [x] The "OpenClaw" in each request url is a place holder, we need to pass the keyword
     to the request.
+- [x] For each links extracted from the page, make them a complete url.
 
 ### Further
 
@@ -59,6 +60,10 @@ Once you finished one task, check the box. Work on the task ONE BY ONE.
     seekit KEYWORD  # direct search using the default bing engine
     seekit KEYWORD --format json  # show result in json
     seekit KEYWORD --format csv  # show result in csv
+
+- [ ] Rename the optional field:`time` to  `published_at` for SerpItem
+- [ ] Change the json response schema to `{"fetched_at": ..., "items": []}`
+- [ ] Rename the field `author` to `source`.
 
 ## Candidates
 

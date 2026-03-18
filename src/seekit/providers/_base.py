@@ -5,13 +5,16 @@ from dataclasses import dataclass
 from functools import cache
 import json
 from json import JSONDecoder
+from pathlib import Path
 import re
+from string import Template
 from typing import Any
-from urllib.parse import quote, quote_plus, urljoin, urlsplit, urlunsplit
+from urllib.parse import quote, quote_plus, urljoin
 
 import curl_cffi
 import lxml.html
 from pydantic import BaseModel
+import yaml
 
 
 @dataclass(frozen=True)
@@ -31,9 +34,6 @@ class SerpItem(BaseModel):
     author: str | None = None
     cover_url: str | None = None
     time: str | None = None
-
-
-KEYWORD_PLACEHOLDER = "OpenClaw"
 
 
 def clean_text(value: str | None) -> str | None:
@@ -92,37 +92,8 @@ def extract_json_from_text(text: str) -> Any:
     return payload
 
 
-def replace_placeholder(value: str, placeholder: str = KEYWORD_PLACEHOLDER) -> str:
-    replacements = (
-        (quote_plus(placeholder), "{keyword_plus}"),
-        (quote(placeholder, safe=""), "{keyword_quoted_strict}"),
-        (quote(placeholder), "{keyword_quoted}"),
-        (placeholder, "{keyword}"),
-    )
-    result = value
-    for source, template in replacements:
-        result = result.replace(source, template)
-    return result
-
-
-def url_to_template(url: str) -> str:
-    parts = urlsplit(url)
-    path = replace_placeholder(parts.path)
-    query_parts: list[str] = []
-    if parts.query:
-        for chunk in parts.query.split("&"):
-            if "=" in chunk:
-                key, value = chunk.split("=", 1)
-                query_parts.append(f"{replace_placeholder(key)}={replace_placeholder(value)}")
-            else:
-                query_parts.append(replace_placeholder(chunk))
-    query = "&".join(query_parts)
-    fragment = replace_placeholder(parts.fragment)
-    return urlunsplit((parts.scheme, parts.netloc, path, query, fragment))
-
-
 def render_template(value: str, keyword: str) -> str:
-    return value.format(
+    return Template(value).safe_substitute(
         keyword=keyword,
         keyword_plus=quote_plus(keyword),
         keyword_quoted=quote(keyword),
@@ -130,20 +101,27 @@ def render_template(value: str, keyword: str) -> str:
     )
 
 
-def build_request_template(
-    *,
-    method: str,
-    url: str,
-    headers: dict[str, str],
-    cookies: dict[str, str],
-    body: str | None = None,
-) -> RequestTemplate:
+@cache
+def load_request_params() -> dict[str, dict]:
+    params_path = Path(__file__).parent.parent / "params.yaml"
+    with params_path.open() as f:
+        return yaml.safe_load(f)["engines"]
+
+
+def load_request_template(engine: str) -> RequestTemplate:
+    p = load_request_params()[engine]
+    url = p["url"]
+    if p.get("query"):
+        url += "?" + "&".join(f"{k}={v}" for k, v in p["query"].items())
+    body = None
+    if p.get("body"):
+        body = "&".join(f"{k}={v}" for k, v in p["body"].items())
     return RequestTemplate(
-        method=method,
-        url=url_to_template(url),
-        headers={name: replace_placeholder(value) for name, value in headers.items()},
-        cookies={name: replace_placeholder(value) for name, value in cookies.items()},
-        body=replace_placeholder(body) if body is not None else None,
+        method=p["method"],
+        url=url,
+        headers=p.get("headers", {}),
+        cookies=p.get("cookies", {}),
+        body=body,
     )
 
 
@@ -180,7 +158,7 @@ class BaseSERP(ABC):
             headers=headers,
             cookies=template.cookies,
             data=template.body,
-            impersonate="chrome",
+            impersonate="safari",
         )
         return response.text
 

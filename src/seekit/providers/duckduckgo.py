@@ -1,35 +1,43 @@
-import json
-import re
+from typing import Any
+from urllib.parse import urlparse, parse_qs
 
-from ._base import BaseSERP, SerpItem, build_request_template, clean_text, strip_html
+from ._base import HtmlSERP, SerpItem, RequestTemplate
 
 
-class DuckDuckGoSerp(BaseSERP):
+class DuckDuckGoSerp(HtmlSERP):
     provider = "duckduckgo"
-    request_template = build_request_template(
+    base_url = "https://html.duckduckgo.com"
+    request_template = RequestTemplate(
         method="GET",
-        url="https://duckduckgo.com/?ia=web&origin=funnel_home_website&t=h_&q=OpenClaw&chip-select=search",
+        url="https://html.duckduckgo.com/html/?q=$keyword_plus",
         headers={
-            "referer": "https://duckduckgo.com/",
+            "referer": "https://html.duckduckgo.com/",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
         },
         cookies={},
     )
+    item_xpath = '//div[contains(@class,"web-result")]'
 
-    def parse_response(self, body: str) -> list[SerpItem]:
-        match = re.search(r"DDG\.duckbar\.add\((\{.*?\}),null,\"index\"\)", body)
-        if not match:
-            return []
-        payload = json.loads(match.group(1))
-        abstract = clean_text(payload["data"].get("AbstractText"))
-        items: list[SerpItem] = []
-        for result in payload["data"].get("Results", []):
-            item = self.make_item(
-                title=strip_html(result.get("Text")),
-                excerpt=abstract,
-                url=result.get("FirstURL"),
-                author=payload["data"].get("AbstractSource"),
-                cover_url=result.get("Icon", {}).get("URL"),
-            )
-            if item is not None:
-                items.append(item)
-        return items
+    @staticmethod
+    def _extract_url(raw: str | None) -> str | None:
+        """Extract the actual URL from a DDG redirect link."""
+        if not raw:
+            return None
+        uddg = parse_qs(urlparse(raw).query).get("uddg")
+        if uddg:
+            return uddg[0]
+        return raw
+
+    def parse_node(self, node: Any) -> SerpItem | None:
+        title = self.first_text(node, './/a[@class="result__a"][1]')
+        raw_url = self.first_attr(node, './/a[@class="result__a"][1]/@href')
+        url = self._extract_url(raw_url)
+        excerpt = self.first_text(node, './/*[contains(@class,"result__snippet")][1]')
+        author = self.first_text(node, './/*[contains(@class,"result__url")][1]')
+        return self.make_item(
+            title=title,
+            excerpt=excerpt,
+            url=url,
+            author=author,
+        )

@@ -1,47 +1,52 @@
+import json
 from typing import Any
 
-from ._base import HtmlSERP, SerpItem, build_request_template
+from ._base import HtmlSERP, SerpItem, load_request_template
 
 
 class RedditSerp(HtmlSERP):
     provider = "reddit"
     base_url = "https://www.reddit.com"
-    request_template = build_request_template(
-        method="GET",
-        url="https://www.reddit.com/search/?q=OpenClaw&cId=a4b7958c-599f-4021-8477-ad4e53afe558&iId=6d1de8a1-657c-4731-b8f4-ed06c8b712f8",
-        headers={
-            "clienthash": "Hq0G2sb7iXxQMj2a",
-            "nonce": "qwArlBEgf8Learlts34AiQ==",
-            "pragma": "no-cache",
-            "priority": "u=1, i",
-            "referer": "https://www.reddit.com/",
-            "sec-ch-ua": "\"Not:A-Brand\";v=\"99\", \"Google Chrome\";v=\"145\", \"Chromium\";v=\"145\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": "\"macOS\"",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin",
-            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
-        },
-        cookies={},
-    )
-    item_xpath = '//a[@data-testid="post-title-text"]'
+    request_template = load_request_template("reddit")
+    item_xpath = '//search-telemetry-tracker[.//a[contains(@href,"/comments/")]]'
+
+    def parse_response(self, body: str) -> list[SerpItem]:
+        items = super().parse_response(body)
+        seen: set[str | None] = set()
+        unique: list[SerpItem] = []
+        for item in items:
+            if item.url not in seen:
+                seen.add(item.url)
+                unique.append(item)
+        return unique
 
     def parse_node(self, node: Any) -> SerpItem | None:
-        title = self.first_text(node, ".")
-        url = self.first_attr(node, "./@href")
-        excerpt = self.first_text(
-            node.getparent(),
-            './/a[contains(@class,"line-clamp-2")][1]',
-        )
-        author = self.first_text(
-            node.getparent(),
-            './/a[starts-with(@href,"/r/")][1]',
-        )
+        ctx_raw = node.get("data-faceplate-tracking-context", "")
+        if not ctx_raw:
+            return None
+        try:
+            ctx = json.loads(ctx_raw)
+        except (json.JSONDecodeError, ValueError):
+            return None
+
+        post = ctx.get("post", {})
+        search = ctx.get("search", {})
+        subreddit = ctx.get("subreddit", {})
+
+        title = post.get("title")
+        excerpt = search.get("snippet") or title
+        post_id = (post.get("id") or "").removeprefix("t3_")
+        sub_name = subreddit.get("name")
+
+        url = None
+        if sub_name and post_id:
+            url = f"https://www.reddit.com/r/{sub_name}/comments/{post_id}/"
+
+        author = f"r/{sub_name}" if sub_name else None
+
         return self.make_item(
             title=title,
             excerpt=excerpt,
             url=url,
             author=author,
-            base_url=self.base_url,
         )

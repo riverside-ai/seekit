@@ -6,13 +6,19 @@ from collections.abc import Sequence
 import json
 from pathlib import Path
 from io import StringIO
+from string import Template
 import sys
 import textwrap
 
 from rich.console import Console
+from rich.markdown import Heading, Markdown
 from rich.table import Table
 
+Heading.LEVEL_ALIGN["h1"] = "left"
+
 from . import PROVIDERS, SerpItem, get_provider
+
+TEMPLATE_PATH = Path(__file__).parent / "serp.md.template"
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -29,9 +35,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--format",
-        choices=("table", "json", "csv"),
-        default="table",
-        help="Output format (default: table)",
+        choices=("markdown", "table", "json", "csv"),
+        default="markdown",
+        help="Output format (default: markdown)",
     )
     parser.add_argument(
         "--limit",
@@ -116,6 +122,80 @@ def format_detail(items: Sequence[SerpItem]) -> str:
     return "\n\n".join(blocks)
 
 
+def _format_md_item(index: int, item: SerpItem) -> str:
+    title = item.title or "(no title)"
+    lines = [f"## {index}. {title}", ""]
+    if item.url:
+        lines.append(f"**URL:** {item.url}  ")
+    if item.author:
+        lines.append(f"**Author:** {item.author}  ")
+    if item.time:
+        lines.append(f"**Time:** {item.time}  ")
+    if item.excerpt:
+        lines.append("")
+        lines.append(item.excerpt)
+    return "\n".join(lines)
+
+
+def format_markdown(items: Sequence[SerpItem], keyword: str, engine: str) -> str:
+    result_blocks = "\n\n".join(
+        _format_md_item(i, item) for i, item in enumerate(items, start=1)
+    )
+    template_text = TEMPLATE_PATH.read_text()
+    return Template(template_text).safe_substitute(
+        keyword=keyword, engine=engine, results=result_blocks
+    )
+
+
+def _save_debug(engine: str, keyword: str, provider: object, body: str | None, err_console: Console) -> None:
+    from .providers._base import RequestTemplate
+
+    cwd = Path.cwd()
+    if body is not None:
+        html_path = cwd / f"seekit-{engine}-debug.html"
+        html_path.write_text(body)
+        err_console.print(f"[yellow]Saved response to {html_path}[/yellow]")
+
+    template: RequestTemplate | None = None
+    try:
+        template = provider.get_request_template(keyword)  # type: ignore[attr-defined]
+    except Exception:
+        pass
+
+    if template is not None:
+        lines = [
+            f"# Debug: seekit {engine}",
+            "",
+            f"**Keyword:** {keyword}",
+            "",
+            "## Request",
+            "",
+            f"**Method:** {template.method}  ",
+            f"**URL:** {template.url}",
+            "",
+            "### Headers",
+            "",
+        ]
+        for name, value in template.headers.items():
+            lines.append(f"- `{name}`: `{value}`")
+        if template.cookies:
+            lines.append("")
+            lines.append("### Cookies")
+            lines.append("")
+            for name, value in template.cookies.items():
+                lines.append(f"- `{name}`: `{value}`")
+        if template.body:
+            lines.append("")
+            lines.append("### Body")
+            lines.append("")
+            lines.append("```")
+            lines.append(template.body)
+            lines.append("```")
+        md_path = cwd / f"seekit-{engine}-debug.md"
+        md_path.write_text("\n".join(lines) + "\n")
+        err_console.print(f"[yellow]Saved request metadata to {md_path}[/yellow]")
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     console = Console()
     err_console = Console(stderr=True)
@@ -130,13 +210,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         results = provider.parse_response(body)
     except Exception as exc:
         if args.debug:
-            if body is not None:
-                dump_path = Path.cwd() / f"seekit-{args.engine}-debug.html"
-                dump_path.write_text(body)
-                err_console.print(f"[yellow]Saved response to {dump_path}[/yellow]")
+            _save_debug(args.engine, keyword, provider, body, err_console)
             raise
         print(f"seekit: {exc}", file=sys.stderr)
         return 1
+
+    if args.debug:
+        _save_debug(args.engine, keyword, provider, body, err_console)
 
     if args.limit < 1:
         print("seekit: --limit must be at least 1", file=sys.stderr)
@@ -155,9 +235,17 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(format_csv(items))
         return 0
 
-    console.print(build_table(items))
-    console.print()
-    console.print(format_detail(items))
+    if args.format == "table":
+        console.print(build_table(items))
+        console.print()
+        console.print(format_detail(items))
+        return 0
+
+    md_text = format_markdown(items, keyword, args.engine)
+    if console.is_terminal:
+        console.print(Markdown(md_text))
+    else:
+        print(md_text)
     return 0
 
 

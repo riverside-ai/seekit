@@ -5,34 +5,22 @@ live using `curl_cffi` request templates derived from captured HAR files.
 
 Supported providers:
 
-- Baidu
 - Bilibili
 - Bing
 - Brave
-- Douyin
 - DuckDuckGo
-- Google
 - Reddit
 - So.com
 - Sogou
 - Threads
-- TikTok
 - Toutiao
 - Weibo
-- Yandex
 - YouTube
-- Zhihu
 
 ## Install
 
 ```bash
-uv add seekit
-```
-
-For the CLI:
-
-```bash
-uv tool install seekit
+pip install seekit
 ```
 
 ## Usage

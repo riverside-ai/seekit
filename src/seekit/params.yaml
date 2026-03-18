@@ -1,0 +1,368 @@
+engines:
+  bilibili:
+    method: GET
+    url: https://api.bilibili.com/x/web-interface/wbi/search/all/v2
+    query:
+      __refresh__: 'true'
+      _extra: ''
+      context: ''
+      page: '1'
+      page_size: '42'
+      order: ''
+      pubtime_begin_s: '0'
+      pubtime_end_s: '0'
+      duration: ''
+      from_source: ''
+      from_spmid: '333.337'
+      platform: pc
+      highlight: '1'
+      single_column: '0'
+      keyword: $keyword_plus
+      qv_id: gTckgRtovmGtKYUYZ0PqzxWq8y3uL8mO
+      ad_resource: '5646'
+      source_tag: '3'
+      web_roll_page: '1'
+      web_location: '1430654'
+      w_rid: 85700376544d73302df94d5662c79409
+      wts: '1773209350'
+    headers:
+      accept: '*/*'
+      accept-encoding: gzip, deflate, br, zstd
+      accept-language: en,zh-CN;q=0.9,zh-TW;q=0.8,zh;q=0.7
+      cache-control: no-cache
+      origin: https://search.bilibili.com
+      pragma: no-cache
+      priority: u=1, i
+      referer: https://search.bilibili.com/all?vt=09333352&keyword=$keyword_plus&from_source=webtop_search&spm_id_from=333.1007&search_source=5
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-platform: '"macOS"'
+      sec-fetch-dest: empty
+      sec-fetch-mode: cors
+      sec-fetch-site: same-site
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+    cookies: {}
+  bing:
+    method: GET
+    url: https://www.bing.com/search
+    query:
+      q: $keyword_plus
+      form: QBLH
+      sp: '-1'
+      ghc: '1'
+      lq: '0'
+      pq: openclaw
+      sc: 12-8
+      qs: n
+      sk: ''
+      cvid: 220EAFC6E29143B9B3C83DBB7DE79851
+    headers:
+      accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+      accept-encoding: gzip, deflate, br, zstd
+      accept-language: en,zh-CN;q=0.9,zh-TW;q=0.8,zh;q=0.7
+      ect: 3g
+      priority: u=0, i
+      referer: https://www.bing.com/?FORM=Z9FD1
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-arch: '"arm"'
+      sec-ch-ua-bitness: '"64"'
+      sec-ch-ua-full-version: '"145.0.7632.160"'
+      sec-ch-ua-full-version-list: '"Not:A-Brand";v="99.0.0.0", "Google Chrome";v="145.0.7632.160",
+        "Chromium";v="145.0.7632.160"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-model: '""'
+      sec-ch-ua-platform: '"macOS"'
+      sec-ch-ua-platform-version: '"15.5.0"'
+      sec-fetch-dest: document
+      sec-fetch-mode: navigate
+      sec-fetch-site: same-origin
+      sec-fetch-user: ?1
+      upgrade-insecure-requests: '1'
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+    cookies: {}
+  brave:
+    method: GET
+    url: https://search.brave.com/search
+    query:
+      q: $keyword_plus
+      source: web
+    headers:
+      accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+      accept-encoding: gzip, deflate, br, zstd
+      accept-language: en,zh-CN;q=0.9,zh-TW;q=0.8,zh;q=0.7
+      cache-control: no-cache
+      pragma: no-cache
+      priority: u=0, i
+      referer: https://search.brave.com/search?q=$keyword_plus&source=brave.com&lang=en
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-platform: '"macOS"'
+      sec-fetch-dest: document
+      sec-fetch-mode: navigate
+      sec-fetch-site: same-origin
+      sec-fetch-user: ?1
+      upgrade-insecure-requests: '1'
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+    cookies: {}
+  reddit:
+    method: GET
+    url: https://www.reddit.com/search/
+    query:
+      q: $keyword_plus
+      cId: a4b7958c-599f-4021-8477-ad4e53afe558
+      iId: 6d1de8a1-657c-4731-b8f4-ed06c8b712f8
+    headers:
+      accept: text/vnd.reddit.hybrid+html, text/html;q=0.9
+      accept-encoding: gzip, deflate, br, zstd
+      accept-language: en,zh-CN;q=0.9,zh-TW;q=0.8,zh;q=0.7
+      cache-control: no-cache
+      clienthash: Hq0G2sb7iXxQMj2a
+      nonce: qwArlBEgf8Learlts34AiQ==
+      pragma: no-cache
+      priority: u=1, i
+      referer: https://www.reddit.com/
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-platform: '"macOS"'
+      sec-fetch-dest: empty
+      sec-fetch-mode: cors
+      sec-fetch-site: same-origin
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+    cookies: {}
+  so:
+    method: GET
+    url: https://www.so.com/s
+    query:
+      q: $keyword_plus
+      src: 360portal
+      _re: '0'
+    headers:
+      accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+      accept-encoding: gzip, deflate, br, zstd
+      accept-language: en,zh-CN;q=0.9,zh-TW;q=0.8,zh;q=0.7
+      cache-control: no-cache
+      connection: keep-alive
+      host: www.so.com
+      pragma: no-cache
+      sec-fetch-dest: document
+      sec-fetch-mode: navigate
+      sec-fetch-site: same-origin
+      sec-fetch-user: ?1
+      upgrade-insecure-requests: '1'
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-platform: '"macOS"'
+    cookies: {}
+  sogou:
+    method: GET
+    url: https://sogou.com/web
+    query:
+      query: $keyword_plus
+      _asf: www.sogou.com
+      _ast: ''
+      w: 01019900
+      p: '40040100'
+      ie: utf8
+      from: index-nologin
+      s_from: index
+      sourceid: '9_01_03'
+      sessiontime: '1773211537441'
+    headers:
+      accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+      accept-encoding: gzip, deflate, br, zstd
+      accept-language: en,zh-CN;q=0.9,zh-TW;q=0.8,zh;q=0.7
+      cache-control: no-cache
+      connection: keep-alive
+      host: sogou.com
+      pragma: no-cache
+      referer: https://sogou.com/
+      sec-fetch-dest: document
+      sec-fetch-mode: navigate
+      sec-fetch-site: same-origin
+      sec-fetch-user: ?1
+      upgrade-insecure-requests: '1'
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-platform: '"macOS"'
+    cookies: {}
+  threads:
+    method: POST
+    url: https://www.threads.com/graphql/query
+    query: {}
+    headers:
+      accept: '*/*'
+      accept-encoding: gzip, deflate, br, zstd
+      accept-language: en,zh-CN;q=0.9,zh-TW;q=0.8,zh;q=0.7
+      cache-control: no-cache
+      content-length: '3876'
+      content-type: application/x-www-form-urlencoded
+      origin: https://www.threads.com
+      pragma: no-cache
+      priority: u=1, i
+      referer: https://www.threads.com/search
+      sec-ch-prefers-color-scheme: light
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-full-version-list: '"Not:A-Brand";v="99.0.0.0", "Google Chrome";v="145.0.7632.160",
+        "Chromium";v="145.0.7632.160"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-model: '""'
+      sec-ch-ua-platform: '"macOS"'
+      sec-ch-ua-platform-version: '"15.5.0"'
+      sec-fetch-dest: empty
+      sec-fetch-mode: cors
+      sec-fetch-site: same-origin
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+      x-asbd-id: '359341'
+      x-bloks-version-id: 1363ee4ad31aa321b811ce30b2aacd0f644c2fb57f440040b43e585a4befa092
+      x-csrftoken: sOoEIgSPkdcC96GAu4oUfK
+      x-fb-friendly-name: BarcelonaSearchResultsQuery
+      x-fb-lsd: AdSfYgvcmYhmLemaIyMOxQfi0Vw
+      x-ig-app-id: '238260118697367'
+      x-logged-out-threads-migrated-request: 'true'
+      x-root-field-name: xdt_api__v1__text_feed__search_results__connection_v2
+      x-web-session-id: xssg2w:wv23lx:i7kr17
+    cookies: {}
+    body:
+      av: '0'
+      __user: '0'
+      __a: '1'
+      __req: w
+      __hs: 20523.HCSV2%3Abarcelona_logged_out_pkg.2.1...0
+      dpr: '2'
+      __ccg: UNKNOWN
+      __rev: '1034886289'
+      __s: xssg2w%3Awv23lx%3Ai7kr17
+      __hsi: '7615890921514195510'
+      __dyn: 7xeUmwlEnwn8K2Wmh0no6u5U4e0yoW3q32360CEbo1nEhw2nVE4W0qa0FE2awgo9oO0n24oaEd82lwv89k2C1Fwc60D85m1mzXwae4UaEW0Loco5G0zK5o4q0HU1IEGdwtU2ewbS1LwTwKG0hq1Iwqo9Epxq261bhEeEkyU8UaUuxq328Dxd0LCwWxW7E7C1jy8661Uw7cwkE
+      __csr: gP2dlEZTjnRhQ9hfqjt8DnAVnTO5y9UWzamXilwmQU7-0ye00q2K2-3efDwCg1983SxW1gg2nw5DxO6vXVe2604gy1K18x6u0CUfk0-e22m4ES8F0QAhNg26UyKWgjS0FA15O05EUEo0b6_w9Za0z_jw4wwFeiagQm15wo43y0f280HC8yB2WwKFpOhiyoQz2LB20e7CyE8E6d0-wgr4jyolK5Mq1Defgd4kQk0_8QwUywJK0OE7fhULI81e2N1a2q8AwbFw9W3GewuU2awYwqomwCxuFa95xcOxt1Eoew0yNze12DBxqU7a0jS4o6G09NDr80Ee02ru6CdAAyox08513Dgvg04g-58V4g0nQm0oe0e5Aw1GWcAw3qFE30xei
+      __hsdp: g2kIIh0DMt4bOIu3yskIAz55aaX5Qk4tNwIT4J248QcxG69o5I3Su35ZoBox281r8pweu2e5U5O1pw9i5VEbCEcU760wA2S0jG1Xw
+      __hblp: 0Dg1o412AKh0gppFkubyKbu7osUy4ojyrAG2u7E7O1voF0Ixq0je12xB0nEpzU5S0C8dUCFoW5U6WdCzqCwPyoaofpbxm582LUO0qC1HDw
+      __sjsp: g2kIITb0AJ8Pgt4etsHa1hqSy18Eg5y43QM1iU
+      __comet_req: '122'
+      lsd: AdSfYgvcmYhmLemaIyMOxQfi0Vw
+      jazoest: '22564'
+      __spin_r: '1034886289'
+      __spin_b: trunk
+      __spin_t: '1773212785'
+      __crn: comet.barcelonawebloggedout.BarcelonaSearchColumnRoute
+      fb_api_caller_class: RelayModern
+      fb_api_req_friendly_name: BarcelonaSearchResultsQuery
+      server_timestamps: 'true'
+      variables: '%7B%22meta_place_id%22%3Anull%2C%22power_search_info%22%3Anull%2C%22query%22%3A%22$keyword_plus%22%2C%22recent%22%3A0%2C%22search_surface%22%3A%22default%22%2C%22tagID%22%3Anull%2C%22trend_fbid%22%3Anull%2C%22__relay_internal__pv__BarcelonaHasSERPHeaderrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaHasCommunitiesrelayprovider%22%3Atrue%2C%22__relay_internal__pv__BarcelonaHasSpoilerStylingInforelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaHasCommunityTopContributorsrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaIsLoggedInrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaHasGhostPostNullStateStringrelayprovider%22%3Atrue%2C%22__relay_internal__pv__BarcelonaHasDearAlgoConsumptionrelayprovider%22%3Atrue%2C%22__relay_internal__pv__BarcelonaHasEventBadgerelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaIsReplyApprovalsConsumptionEnabledrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaIsSearchDiscoveryEnabledrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaHasPodcastConsumptionrelayprovider%22%3Atrue%2C%22__relay_internal__pv__BarcelonaHasGameScoreSharerelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaHasMusicrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaHasSelfThreadCountrelayprovider%22%3Afalse%2C%22__relay_internal__pv__IsTagIndicatorEnabledrelayprovider%22%3Atrue%2C%22__relay_internal__pv__BarcelonaHasDeepDiverelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaHasGhostPostConsumptionrelayprovider%22%3Atrue%2C%22__relay_internal__pv__BarcelonaHasGhostPostEmojiActivationrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaOptionalCookiesEnabledrelayprovider%22%3Atrue%2C%22__relay_internal__pv__BarcelonaHasDearAlgoWebProductionrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaQuotedPostUFIEnabledrelayprovider%22%3Atrue%2C%22__relay_internal__pv__BarcelonaHasTopicTagsrelayprovider%22%3Atrue%2C%22__relay_internal__pv__BarcelonaIsCrawlerrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaHasDisplayNamesrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaCanSeeSponsoredContentrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaShouldShowFediverseM075Featuresrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaImplicitTrendsGKrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaIsInternalUserrelayprovider%22%3Afalse%2C%22__relay_internal__pv__BarcelonaIsReplyApprovalEnabledrelayprovider%22%3Afalse%7D'
+      doc_id: '26074221315572873'
+  toutiao:
+    method: GET
+    url: https://so.toutiao.com/search
+    query:
+      dvpf: pc
+      source: input
+      keyword: $keyword_plus
+      enable_druid_v2: '1'
+    headers:
+      accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+      accept-encoding: gzip, deflate, br, zstd
+      accept-language: en,zh-CN;q=0.9,zh-TW;q=0.8,zh;q=0.7
+      cache-control: no-cache
+      pragma: no-cache
+      priority: u=0, i
+      referer: https://www.toutiao.com/
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-platform: '"macOS"'
+      sec-fetch-dest: document
+      sec-fetch-mode: navigate
+      sec-fetch-site: same-site
+      sec-fetch-user: ?1
+      upgrade-insecure-requests: '1'
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+    cookies: {}
+  weibo:
+    method: GET
+    url: https://m.weibo.cn/api/container/getIndex
+    query:
+      containerid: 100103type%3D1%26q%3D$keyword_plus
+      page_type: searchall
+    headers:
+      sec-ch-ua-platform: '"macOS"'
+      x-xsrf-token: ffebdd
+      referer: https://m.weibo.cn/search?containerid=100103type%3D1%26q%3D$keyword_plus
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-mobile: ?0
+      mweibo-pwa: '1'
+      x-requested-with: XMLHttpRequest
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+      accept: application/json, text/plain, */*
+    cookies: {}
+  youtube:
+    method: GET
+    url: https://www.youtube.com/results
+    query:
+      search_query: $keyword_plus
+    headers:
+      upgrade-insecure-requests: '1'
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+      device-memory: '8'
+      sec-ch-dpr: '2'
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-arch: '"arm"'
+      sec-ch-ua-bitness: '"64"'
+      sec-ch-ua-form-factors: '"Desktop"'
+      sec-ch-ua-full-version: '"145.0.7632.160"'
+      sec-ch-ua-full-version-list: '"Not:A-Brand";v="99.0.0.0", "Google Chrome";v="145.0.7632.160",
+        "Chromium";v="145.0.7632.160"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-model: '""'
+      sec-ch-ua-platform: '"macOS"'
+      sec-ch-ua-platform-version: '"15.5.0"'
+      sec-ch-ua-wow64: ?0
+      sec-ch-viewport-width: '1063'
+    cookies: {}
+  zhihu:
+    method: GET
+    url: https://www.zhihu.com/api/v4/search_v3
+    query:
+      gk_version: gz-gaokao
+      t: general
+      q: $keyword_plus
+      correction: '1'
+      offset: '0'
+      limit: '20'
+      filter_fields: ''
+      lc_idx: '0'
+      show_all_topics: '0'
+      search_source: Normal
+    headers:
+      accept: '*/*'
+      accept-encoding: gzip, deflate, br, zstd
+      accept-language: en,zh-CN;q=0.9,zh-TW;q=0.8,zh;q=0.7
+      cache-control: no-cache
+      pragma: no-cache
+      priority: u=1, i
+      referer: https://www.zhihu.com/search?type=content&q=$keyword_plus
+      sec-ch-ua: '"Not:A-Brand";v="99", "Google Chrome";v="145", "Chromium";v="145"'
+      sec-ch-ua-mobile: ?0
+      sec-ch-ua-platform: '"macOS"'
+      sec-fetch-dest: empty
+      sec-fetch-mode: cors
+      sec-fetch-site: same-origin
+      user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
+        (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36
+      x-api-version: 3.0.91
+      x-app-za: OS=Web
+      x-requested-with: fetch
+      x-zse-93: '101_3_3.0'
+      x-zse-96: 2.0_P8pmQV+P3QWo22U6D/fFbhCFlzFgB88o/LJyozaDnyXCDxxa+PrUus/NzDG0GcmS
+      x-zst-81: 3_2.0aR_sn77yn6O92wOB8hPZnQr0EMYxc4f18wNBUgpTQ6nxERFZs_Y0-4Lm-h3_tufIwJS8gcxTgJS_AuPZNcXCTwxI78YxEM20s4PGDwN8gGcYAupMWufIoLVqr4gxrRPOI0cY7HL8qun9g93mFukyigcmebS_FwOYPRP0E4rZUrN9DDom3hnynAUMnAVPF_PhaueTFHuYPvNMqCgqqgNM9BXfxBFKfBpmyw3GDq30WGoY8BL9kGo0EqgGHBxKXgSTVXC1FcCGDcLYUUgYy9gfZcpBNCOVTwoqY9OfcROq2ugBr_gGYDpmzwefk_LfuwFm0UeLeqNfbveMxwSBT9S_CbVfHCXLZwxC3ugKLUX19CF9SCg_6GV0Vg_zoqLfQLVKjvSL8GxBEDe8CbHBzgFmZcU0HgwpPUoMgrH_LbcGarOBQwoCEgC_AwXO_qCOhgYK3wNCUceCbHSs8gHYnG2_UgVYoipK1UVLs4xLQ7NCorxs
+    cookies: {}

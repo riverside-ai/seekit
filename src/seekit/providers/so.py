@@ -1,16 +1,11 @@
 from typing import Any
 
-from ._base import HtmlSERP, SerpItem, build_request_template
+from ._base import HtmlSERP, SerpItem, load_request_template
 
 
 class SoSerp(HtmlSERP):
     provider = "so"
-    request_template = build_request_template(
-        method="GET",
-        url="https://www.so.com/s?q=OpenClaw&src=360portal&_re=0",
-        headers={},
-        cookies={},
-    )
+    request_template = load_request_template("so")
     item_xpath = '//li[contains(@class,"res-list")]'
 
     def parse_node(self, node: Any) -> SerpItem | None:
