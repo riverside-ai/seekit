@@ -54,11 +54,21 @@ SUPPORTED_ENGINES: tuple[EngineConfig, ...] = (
 )
 
 
+def _has_chinese(text: str) -> bool:
+    return any("\u4e00" <= ch <= "\u9fff" for ch in text)
+
+
+def default_engine(keyword: str) -> str:
+    return "sogou" if _has_chinese(keyword) else "bing"
+
+
 def get_provider(name: ProviderName):
     return PROVIDERS[name]()
 
 
-def search(keyword: str, provider: str = "bing") -> list[SerpItem]:
+def search(keyword: str, provider: str | None = None) -> list[SerpItem]:
+    if provider is None:
+        provider = default_engine(keyword)
     return get_provider(provider).query(keyword)
 
 

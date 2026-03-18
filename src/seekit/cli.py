@@ -16,7 +16,7 @@ from rich.table import Table
 
 Heading.LEVEL_ALIGN["h1"] = "left"
 
-from . import PROVIDERS, SerpItem, get_provider
+from . import PROVIDERS, SerpItem, default_engine, get_provider
 
 TEMPLATE_PATH = Path(__file__).parent / "serp.md.template"
 
@@ -30,8 +30,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--engine",
         choices=sorted(PROVIDERS),
-        default="bing",
-        help="Search engine to use (default: bing)",
+        default=None,
+        help="Search engine to use (default: sogou for Chinese, bing otherwise)",
     )
     parser.add_argument(
         "--format",
@@ -202,7 +202,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     keyword = " ".join(args.keyword)
-    provider = get_provider(args.engine)
+    engine = args.engine or default_engine(keyword)
+    provider = get_provider(engine)
     body: str | None = None
 
     try:
@@ -210,13 +211,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         results = provider.parse_response(body)
     except Exception as exc:
         if args.debug:
-            _save_debug(args.engine, keyword, provider, body, err_console)
+            _save_debug(engine, keyword, provider, body, err_console)
             raise
         print(f"seekit: {exc}", file=sys.stderr)
         return 1
 
     if args.debug:
-        _save_debug(args.engine, keyword, provider, body, err_console)
+        _save_debug(engine, keyword, provider, body, err_console)
 
     if args.limit < 1:
         print("seekit: --limit must be at least 1", file=sys.stderr)
@@ -241,7 +242,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         console.print(format_detail(items))
         return 0
 
-    md_text = format_markdown(items, keyword, args.engine)
+    md_text = format_markdown(items, keyword, engine)
     if console.is_terminal:
         console.print(Markdown(md_text))
     else:
