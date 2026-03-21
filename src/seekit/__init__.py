@@ -4,7 +4,6 @@ from typing import TypeAlias
 
 from .providers import (
     BilibiliSerp,
-    BingSerp,
     BraveSerp,
     DuckDuckGoSerp,
     RedditSerp,
@@ -27,7 +26,6 @@ class EngineConfig:
 
 PROVIDERS = {
     "bilibili": BilibiliSerp,
-    "bing": BingSerp,
     "brave": BraveSerp,
     "duckduckgo": DuckDuckGoSerp,
     "reddit": RedditSerp,
@@ -41,7 +39,6 @@ PROVIDERS = {
 
 SUPPORTED_ENGINES: tuple[EngineConfig, ...] = (
     EngineConfig(name="bilibili", type="video"),
-    EngineConfig(name="bing", type=None),
     EngineConfig(name="brave", type="web"),
     EngineConfig(name="duckduckgo", type="web"),
     EngineConfig(name="reddit", type="social"),
@@ -59,7 +56,7 @@ def _has_chinese(text: str) -> bool:
 
 
 def default_engine(keyword: str) -> str:
-    return "sogou" if _has_chinese(keyword) else "bing"
+    return "sogou" if _has_chinese(keyword) else "brave"
 
 
 def get_provider(name: ProviderName):
@@ -72,4 +69,4 @@ def search(keyword: str, provider: str | None = None) -> list[SerpItem]:
     return get_provider(provider).query(keyword)
 
 
-bing = partial(search, provider="bing")
+brave = partial(search, provider="brave")

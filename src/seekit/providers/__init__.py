@@ -1,6 +1,5 @@
 from ._base import BaseSERP, HtmlSERP, RequestTemplate, SerpItem
 from .bilibili import BilibiliSerp
-from .bing import BingSerp
 from .brave import BraveSerp
 from .duckduckgo import DuckDuckGoSerp
 from .reddit import RedditSerp
@@ -17,7 +16,6 @@ __all__ = [
     "RequestTemplate",
     "SerpItem",
     "BilibiliSerp",
-    "BingSerp",
     "BraveSerp",
     "DuckDuckGoSerp",
     "RedditSerp",

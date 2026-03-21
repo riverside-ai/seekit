@@ -6,7 +6,6 @@ live using `curl_cffi` request templates derived from captured HAR files.
 Supported providers:
 
 - Bilibili
-- Bing
 - Brave
 - DuckDuckGo
 - Reddit

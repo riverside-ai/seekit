@@ -20,14 +20,16 @@ Prefer the command line over the Python API — it is simpler and produces struc
 ### CLI (preferred)
 
 ```bash
-seekit <query> --engine <provider> --format json --limit 10
+seekit <query> --format json --limit 10
 ```
+
+By default, `seekit` selects engine based on the query language (sogou for Chinese, brave for English). Only specify `--engine` when you need a specific platform (e.g. youtube for videos).
 
 Examples:
 
 ```bash
-seekit "latest OpenAI reasoning model" --engine bing --format json
-seekit "python asyncio tutorial" --engine google --format markdown
+seekit "latest OpenAI reasoning model" --format json
+seekit "最新的大模型" --format json
 seekit "cat videos" --engine youtube --format json --limit 5
 ```
 
@@ -35,7 +37,7 @@ seekit "cat videos" --engine youtube --format json --limit 5
 
 ```python
 import seekit
-results = seekit.search(query, provider="bing")
+results = seekit.search(query, provider="brave")
 ```
 
 Each result is a `SerpItem` with fields: `provider`, `title`, `excerpt`, `url`, optional `author`, optional `cover_url`.
@@ -45,7 +47,7 @@ Each result is a `SerpItem` with fields: `provider`, `title`, `excerpt`, `url`, 
 ```json
 [
   {
-    "provider": "bing",
+    "provider": "brave",
     "title": "OpenAI announces new reasoning model",
     "excerpt": "OpenAI has released its latest reasoning model...",
     "url": "https://example.com/article",
@@ -58,7 +60,7 @@ Each result is a `SerpItem` with fields: `provider`, `title`, `excerpt`, `url`, 
 
 ## Choosing a provider
 
-- `bing`, `brave`, `duckduckgo`, `so`, `sogou`, `toutiao` for web
+- `brave`, `brave`, `duckduckgo`, `so`, `sogou`, `toutiao` for web
 - `youtube`, `bilibili` for video
 - `reddit`, `threads`, `weibo` for social
 
